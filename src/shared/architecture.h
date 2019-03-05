@@ -49,6 +49,7 @@ enum {
         ARCHITECTURE_MIPS64,
         ARCHITECTURE_MIPS64_LE,
         ARCHITECTURE_ALPHA,
+        ARCHITECTURE_SW64,
         ARCHITECTURE_ARM,
         ARCHITECTURE_ARM_BE,
         ARCHITECTURE_ARM64,
@@ -137,6 +138,9 @@ int uname_architecture(void);
 #elif defined(__alpha__)
 #  define native_architecture() ARCHITECTURE_ALPHA
 #  define LIB_ARCH_TUPLE "alpha-linux-gnu"
+#elif defined(__sw_64__)
+#  define native_architecture() ARCHITECTURE_SW64
+#  define LIB_ARCH_TUPLE "sw_64sw2-linux-gnu"
 #elif defined(__aarch64__)
 #  if __BYTE_ORDER == __BIG_ENDIAN
 #    define native_architecture() ARCHITECTURE_ARM64_BE

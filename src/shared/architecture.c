@@ -70,6 +70,8 @@ int uname_architecture(void) {
                 { "mips",       ARCHITECTURE_MIPS     },
 #elif defined(__alpha__)
                 { "alpha" ,     ARCHITECTURE_ALPHA    },
+#elif defined(__sw_64__)
+                { "sw_64" ,     ARCHITECTURE_SW64    },
 #elif defined(__arm__) || defined(__aarch64__)
                 { "aarch64",    ARCHITECTURE_ARM64    },
                 { "aarch64_be", ARCHITECTURE_ARM64_BE },
@@ -161,6 +163,7 @@ static const char *const architecture_table[_ARCHITECTURE_MAX] = {
         [ARCHITECTURE_MIPS64] = "mips64",
         [ARCHITECTURE_MIPS64_LE] = "mips64-le",
         [ARCHITECTURE_ALPHA] = "alpha",
+        [ARCHITECTURE_SW64] = "sw_64",
         [ARCHITECTURE_ARM] = "arm",
         [ARCHITECTURE_ARM_BE] = "arm-be",
         [ARCHITECTURE_ARM64] = "arm64",
