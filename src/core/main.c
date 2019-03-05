@@ -596,6 +596,9 @@ static int config_parse_join_controllers(const char *unit,
 }
 
 static int parse_config_file(void) {
+        usec_t start_timeout_usec = 0;
+        FailureAction start_timeout_action = FAILURE_ACTION_NONE;
+        char *start_timeout_reboot_arg = NULL;
 
         const ConfigTableItem items[] = {
                 { "Manager", "LogLevel",                  config_parse_level2,           0, NULL                                   },
@@ -643,6 +646,9 @@ static int parse_config_file(void) {
                 { "Manager", "DefaultCPUAccounting",      config_parse_bool,             0, &arg_default_cpu_accounting            },
                 { "Manager", "DefaultBlockIOAccounting",  config_parse_bool,             0, &arg_default_blockio_accounting        },
                 { "Manager", "DefaultMemoryAccounting",   config_parse_bool,             0, &arg_default_memory_accounting         },
+                { "Manager", "StartTimeoutSec",           config_parse_sec,              0, &start_timeout_usec                    },
+                { "Manager", "StartTimeoutAction",        config_parse_failure_action,   0, &start_timeout_action                  },
+                { "Manager", "StartTimeoutRebootArgument",config_parse_string,           0, &start_timeout_reboot_arg              },
                 { "Manager", "CtrlAltDelBurstAction",     config_parse_emergency_action, 0, &arg_cad_burst_action                  },
                 { "Manager", "DefaultTasksAccounting",    config_parse_bool,             0, &arg_default_tasks_accounting          },
                 { "Manager", "DefaultTasksMax",           config_parse_tasks_max,        0, &arg_default_tasks_max                 },
@@ -655,6 +661,10 @@ static int parse_config_file(void) {
         conf_dirs_nulstr = arg_running_as == SYSTEMD_SYSTEM ? CONF_DIRS_NULSTR("systemd/system.conf") : CONF_DIRS_NULSTR("systemd/user.conf");
         config_parse_many(fn, conf_dirs_nulstr, "Manager\0",
                           config_item_table_lookup, items, false, NULL);
+
+        if (start_timeout_usec != 0 || start_timeout_action != FAILURE_ACTION_NONE)
+                log_warning("StartTimeoutSec, StartTimeoutAction, StartTimeoutRebootArgument settings have\n"
+                            "been replaced by JobTimeoutSec, JobTimeoutAction, JobTimeoutReboot, ignoring.");
 
         return 0;
 }
