@@ -597,7 +597,6 @@ static int config_parse_join_controllers(const char *unit,
 
 static int parse_config_file(void) {
         usec_t start_timeout_usec = 0;
-        FailureAction start_timeout_action = FAILURE_ACTION_NONE;
         char *start_timeout_reboot_arg = NULL;
 
         const ConfigTableItem items[] = {
@@ -647,7 +646,6 @@ static int parse_config_file(void) {
                 { "Manager", "DefaultBlockIOAccounting",  config_parse_bool,             0, &arg_default_blockio_accounting        },
                 { "Manager", "DefaultMemoryAccounting",   config_parse_bool,             0, &arg_default_memory_accounting         },
                 { "Manager", "StartTimeoutSec",           config_parse_sec,              0, &start_timeout_usec                    },
-                { "Manager", "StartTimeoutAction",        config_parse_failure_action,   0, &start_timeout_action                  },
                 { "Manager", "StartTimeoutRebootArgument",config_parse_string,           0, &start_timeout_reboot_arg              },
                 { "Manager", "CtrlAltDelBurstAction",     config_parse_emergency_action, 0, &arg_cad_burst_action                  },
                 { "Manager", "DefaultTasksAccounting",    config_parse_bool,             0, &arg_default_tasks_accounting          },
@@ -662,7 +660,7 @@ static int parse_config_file(void) {
         config_parse_many(fn, conf_dirs_nulstr, "Manager\0",
                           config_item_table_lookup, items, false, NULL);
 
-        if (start_timeout_usec != 0 || start_timeout_action != FAILURE_ACTION_NONE)
+        if (start_timeout_usec != 0)
                 log_warning("StartTimeoutSec, StartTimeoutAction, StartTimeoutRebootArgument settings have\n"
                             "been replaced by JobTimeoutSec, JobTimeoutAction, JobTimeoutReboot, ignoring.");
 
