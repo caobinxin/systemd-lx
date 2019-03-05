@@ -453,7 +453,8 @@ CLEANFILES += \
 	$(nodist_zshcompletion_DATA)
 
 dist_sysctl_DATA = \
-	sysctl.d/50-default.conf
+	sysctl.d/50-default.conf \
+        sysctl.d/50-bridge.conf
 
 dist_systemunit_DATA = \
 	units/graphical.target \
@@ -3528,7 +3529,8 @@ dist_udevrules_DATA += \
         rules/80-net-name-slot.rules
 
 nodist_udevrules_DATA += \
-	rules/99-systemd.rules
+	rules/99-systemd.rules \
+       rules/99-bridge.rules
 
 udevconfdir = $(sysconfdir)/udev
 dist_udevconf_DATA = \
@@ -3540,10 +3542,12 @@ sharepkgconfig_DATA = \
 
 EXTRA_DIST += \
 	rules/99-systemd.rules.in \
+        rules/99-bridge.rules.in \
 	src/udev/udev.pc.in
 
 CLEANFILES += \
 	rules/99-systemd.rules \
+        rules/99-bridge.rules \
 	src/udev/udev.pc
 
 EXTRA_DIST += \
