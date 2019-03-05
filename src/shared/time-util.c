@@ -88,6 +88,21 @@ dual_timestamp* dual_timestamp_from_monotonic(dual_timestamp *ts, usec_t u) {
         return ts;
 }
 
+dual_timestamp* dual_timestamp_warp(dual_timestamp *ts, int min) {
+        usec_t d;
+        if (min >= 0) {
+                d = min * USEC_PER_MINUTE;
+                ts->realtime =
+                        ts->realtime > d ?
+                        ts->realtime - d : 0;
+        } else {
+                d = (-min) * USEC_PER_MINUTE;
+                ts->realtime = ts->realtime + d;
+        }
+        return ts;
+}
+
+
 usec_t timespec_load(const struct timespec *ts) {
         assert(ts);
 

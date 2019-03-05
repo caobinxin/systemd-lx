@@ -1344,8 +1344,18 @@ int main(int argc, char *argv[]) {
                                 r = clock_set_timezone(&min);
                                 if (r < 0)
                                         log_error_errno(r, "Failed to apply local time delta, ignoring: %m");
-                                else
+                                else {
                                         log_info("RTC configured in localtime, applying delta of %i minutes to system time.", min);
+
+                                        /* Fix timestamps generated before the very first call. */
+                                        dual_timestamp_warp(&kernel_timestamp, min);
+                                        dual_timestamp_warp(&userspace_timestamp, min);
+                                        if(in_initrd())
+                                                dual_timestamp_warp(&initrd_timestamp, min);
+                                        dual_timestamp_warp(&security_start_timestamp, min);
+                                        dual_timestamp_warp(&security_finish_timestamp, min);
+                                }
+
                         } else if (!in_initrd()) {
                                 /*
                                  * Do a dummy very first call to seal the kernel's time warp magic.
