@@ -18,4 +18,6 @@ Before=shutdown.target
 
 [Service]
 Type=oneshot
+ExecStartPre=-/bin/bash -c "TERM=linux /usr/bin/clear > /dev/tty1"
 ExecStart=@rootlibexecdir@/systemd-update-utmp runlevel
+ExecStartPost=-/bin/bash -c "TERM=linux /usr/bin/clear > /dev/tty1"

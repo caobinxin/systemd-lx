@@ -8955,8 +8955,9 @@ uint64_t system_tasks_max_scale(uint64_t v, uint64_t max) {
 }
 
 int acquire_data_fd(const void *data, size_t size, unsigned flags) {
-
+#ifdef O_TMPFILE
         char procfs_path[strlen("/proc/self/fd/") + DECIMAL_STR_MAX(int)];
+#endif
         _cleanup_close_pair_ int pipefds[2] = { -1, -1 };
         char pattern[] = "/dev/shm/data-fd-XXXXXX";
         _cleanup_close_ int fd = -1;
@@ -9060,6 +9061,9 @@ try_pipe:
         }
 
 try_dev_shm:
+#ifdef O_TMPFILE
+         /* Try O_TMPFILE, if it is supported */
+
         if ((flags & ACQUIRE_NO_TMPFILE) == 0) {
                 fd = open("/dev/shm", O_RDWR|O_TMPFILE|O_CLOEXEC, 0500);
                 if (fd < 0)
@@ -9079,6 +9083,9 @@ try_dev_shm:
 
                 return r;
         }
+#else
+        goto try_dev_shm_without_o_tmpfile;
+#endif
 
 try_dev_shm_without_o_tmpfile:
         if ((flags & ACQUIRE_NO_REGULAR) == 0) {
