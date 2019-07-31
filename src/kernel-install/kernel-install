@@ -39,7 +39,7 @@ if [[ -x /sbin/new-kernel-pkg ]]; then
         exit 0
     fi
 
-
+fi
 usage()
 {
     echo "Usage:"
