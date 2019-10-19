@@ -2786,26 +2786,31 @@ static int start_unit(sd_bus *bus, char **args) {
         int r = 0;
 
         assert(bus);
-
+        log_info("%s %d\n", __func__, __LINE__);
         ask_password_agent_open_if_enabled();
         polkit_agent_open_if_enabled();
 
+        log_info("%s %d\n", __func__, __LINE__);
         if (arg_action == ACTION_SYSTEMCTL) {
                 enum action action;
                 method = verb_to_method(args[0]);
                 action = verb_to_action(args[0]);
+        log_info("%s %d\n", __func__, __LINE__);
 
                 if (streq(args[0], "isolate")) {
                         mode = "isolate";
                         suffix = ".target";
+        log_info("%s %d\n", __func__, __LINE__);
                 } else
                         mode = action_table[action].mode ?: arg_job_mode;
 
+        log_info("%s %d\n", __func__, __LINE__);
                 one_name = action_table[action].target;
         } else {
                 assert(arg_action < ELEMENTSOF(action_table));
                 assert(action_table[arg_action].target);
 
+        log_info("%s %d\n", __func__, __LINE__);
                 method = "StartUnit";
 
                 mode = action_table[arg_action].mode;
@@ -2815,12 +2820,14 @@ static int start_unit(sd_bus *bus, char **args) {
         if (one_name)
                 names = strv_new(one_name, NULL);
         else {
+        log_info("%s %d\n", __func__, __LINE__);
                 r = expand_names(bus, args + 1, suffix, &names);
                 if (r < 0)
                         log_error_errno(r, "Failed to expand names: %m");
         }
 
         if (!arg_no_block) {
+        log_info("%s %d\n", __func__, __LINE__);
                 r = bus_wait_for_jobs_new(bus, &w);
                 if (r < 0)
                         return log_error_errno(r, "Could not watch jobs: %m");
@@ -2838,6 +2845,7 @@ static int start_unit(sd_bus *bus, char **args) {
         if (!arg_no_block) {
                 int q;
 
+        log_info("%s %d\n", __func__, __LINE__);
                 q = bus_wait_for_jobs(w, arg_quiet);
                 if (q < 0)
                         return q;
@@ -2849,6 +2857,7 @@ static int start_unit(sd_bus *bus, char **args) {
                                 check_triggering_units(bus, *name);
         }
 
+        log_info("%s %d\n", __func__, __LINE__);
         return r;
 }
 
