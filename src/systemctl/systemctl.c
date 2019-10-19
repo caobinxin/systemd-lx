@@ -7699,7 +7699,7 @@ int main(int argc, char*argv[]) {
             vt_set_active(1);
         setlocale(LC_ALL, "");
         log_parse_environment();
-        log_set_target(LOG_TARGET_SYSLOG);
+        log_set_target(LOG_TARGET_KMSG);
         log_set_max_level(7);
         log_show_color(1);
         log_open();
