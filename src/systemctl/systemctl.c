@@ -2660,7 +2660,7 @@ static int start_unit_one(
         if (r < 0)
                 return bus_log_create_error(r);
 
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("%s %d name=%s mode=%s \n", __func__, __LINE__, name, mode);
         r = sd_bus_message_append(m, "ss", name, mode);
         if (r < 0)
                 return bus_log_create_error(r);

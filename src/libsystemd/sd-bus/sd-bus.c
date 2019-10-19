@@ -1990,7 +1990,7 @@ _public_ int sd_bus_call(
         unsigned i;
         int r;
 
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("%s %d start\n", __func__, __LINE__);
         assert_return(bus, -EINVAL);
         assert_return(m, -EINVAL);
         assert_return(m->header->type == SD_BUS_MESSAGE_METHOD_CALL, -EINVAL);
@@ -2033,14 +2033,14 @@ _public_ int sd_bus_call(
         log_info("%s %d\n", __func__, __LINE__);
                 while (i < bus->rqueue_size) {
                         sd_bus_message *incoming = NULL;
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("1. %s %d i=%d\n", __func__, __LINE__, i);
 
                         incoming = bus->rqueue[i];
 
                         if (incoming->reply_cookie == cookie) {
                                 /* Found a match! */
 
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("2. %s %d cookie=%d\n", __func__, __LINE__, cookie);
                                 memmove(bus->rqueue + i, bus->rqueue + i + 1, sizeof(sd_bus_message*) * (bus->rqueue_size - i - 1));
                                 bus->rqueue_size--;
 
@@ -2063,13 +2063,13 @@ _public_ int sd_bus_call(
                                         r = sd_bus_error_setf(error, SD_BUS_ERROR_INCONSISTENT_MESSAGE, "Reply message contained file descriptors which I couldn't accept. Sorry.");
 
                                 } else if (incoming->header->type == SD_BUS_MESSAGE_METHOD_ERROR){
-        log_info("%s %d\n", __func__, __LINE__);
                                         r = sd_bus_error_copy(error, &incoming->error);
+        log_info("3. %s %d\n name=%s message=%s", __func__, __LINE__, error->name, error->message);
                                 }else{
         log_info("%s %d\n", __func__, __LINE__);
                                         r = -EIO;}
 
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("4. %s %d\n", __func__, __LINE__);
                                 sd_bus_message_unref(incoming);
                                 return r;
 
