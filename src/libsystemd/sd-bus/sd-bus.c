@@ -29,6 +29,14 @@
 #include <sys/mman.h>
 #include <pthread.h>
 
+#include <string.h>
+#include <errno.h>
+//#include <glib/gstdio.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/vt.h>
+
 #include "util.h"
 #include "macro.h"
 #include "strv.h"
@@ -57,6 +65,75 @@
 static int bus_poll(sd_bus *bus, bool need_more, uint64_t timeout_usec);
 static int attach_io_events(sd_bus *b);
 static void detach_io_events(sd_bus *b);
+static int open_tty (void);
+int vt_get_active (void);
+void vt_set_active (int number);
+
+static int
+open_tty (void)
+{
+    int fd;
+
+    fd = open ("/dev/tty0", O_RDONLY | O_NOCTTY, 0);
+    if (fd < 0)
+        printf ("Error opening /dev/tty0: %s", strerror (errno));
+    return fd;
+}
+int
+vt_get_active (void)
+{
+
+    int tty_fd;
+    int active = -1;
+
+    /* Pretend always active */
+   // if (getuid () != 0)
+     //   return 1;
+
+    tty_fd = open_tty ();
+    if (tty_fd >= 0)
+    {
+        struct vt_stat vt_state = { 0 };
+        if (ioctl (tty_fd, VT_GETSTATE, &vt_state) < 0)
+            printf ("Error using VT_GETSTATE on /dev/tty0: %s", strerror (errno));
+        else
+            active = vt_state.v_active;
+        close (tty_fd);
+    }
+
+    return active;
+
+}
+
+void
+vt_set_active (int number)
+{
+    int tty_fd;
+
+    printf ("Activating VT %d", number);
+
+    /* Pretend always active */
+ //   if (getuid () != 0)
+   //     return;
+
+    tty_fd = open_tty ();
+    if (tty_fd >= 0)
+    {
+        int n = number;
+
+        if (ioctl (tty_fd, VT_ACTIVATE, n) < 0)
+            printf ("Error using VT_ACTIVATE %d on /dev/tty0: %s", n, strerror (errno));
+
+        /* Wait for the VT to become active to avoid a suspected
+ *          * race condition somewhere between LightDM, X, ConsoleKit and the kernel.
+ *                   * See https://bugs.launchpad.net/bugs/851612 */
+        if (ioctl (tty_fd, VT_WAITACTIVE) < 0)
+            printf ("Error using VT_WAITACTIVE %d on /dev/tty0: %s", n, strerror (errno));
+
+    //    close (tty_fd);
+    }
+
+}
 
 static void bus_close_fds(sd_bus *b) {
         assert(b);
@@ -2028,7 +2105,9 @@ _public_ int sd_bus_call(
                         return r;
                 if (r == 0)
                         return -ETIMEDOUT;
-
+    printf("path:%s,interface:%s,member:%s,destination:%s,sender:%s\n",m->path,m->interface,m->member,m->destination,m->sender);
+    //	if(!strcmp(m->member,"StartUnit"))
+    //		vt_set_active(1);
                 r = dispatch_wqueue(bus);
                 if (r < 0) {
                         if (r == -ENOTCONN || r == -ECONNRESET || r == -EPIPE || r == -ESHUTDOWN) {

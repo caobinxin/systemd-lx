@@ -38,6 +38,9 @@
 #include <stddef.h>
 #include <sys/prctl.h>
 
+#include <sys/ioctl.h>
+#include <linux/vt.h>
+
 #include "sd-daemon.h"
 #include "sd-shutdown.h"
 #include "sd-login.h"
@@ -164,6 +167,43 @@ static bool original_stdout_is_tty;
 static int daemon_reload(sd_bus *bus, char **args);
 static int halt_now(enum action a);
 static int check_one_unit(sd_bus *bus, const char *name, const char *good_states, bool quiet);
+
+static int open_tty (void);
+static void vt_set_active (int number);
+
+static int
+open_tty (void)
+{
+    int fd;
+
+    fd = open ("/dev/tty0", O_RDONLY | O_NOCTTY, 0);
+    if (fd < 0)
+        printf ("Error opening /dev/tty0: %s", strerror (errno));
+    return fd;
+}
+static void
+vt_set_active (int number)
+{
+    int tty_fd;
+
+    printf ("Activating VT %d", number);
+
+
+    tty_fd = open_tty ();
+    if (tty_fd >= 0)
+    {
+        int n = number;
+
+        if (ioctl (tty_fd, VT_ACTIVATE, n) < 0)
+            printf ("Error using VT_ACTIVATE %d on /dev/tty0: %s", n, strerror (errno));
+
+        if (ioctl (tty_fd, VT_WAITACTIVE) < 0)
+            printf ("Error using VT_WAITACTIVE %d on /dev/tty0: %s", n, strerror (errno));
+
+    }
+
+}
+
 
 static UnitFileFlags args_to_flags(void) {
         return (arg_runtime ? UNIT_FILE_RUNTIME : 0) |

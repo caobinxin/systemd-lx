@@ -1,0 +1,10 @@
+%lang(uk) /usr/share/locale/uk/LC_MESSAGES/systemd.mo
+%lang(ru) /usr/share/locale/ru/LC_MESSAGES/systemd.mo
+%lang(pl) /usr/share/locale/pl/LC_MESSAGES/systemd.mo
+%lang(pt) /usr/share/locale/pt_BR/LC_MESSAGES/systemd.mo
+%lang(de) /usr/share/locale/de/LC_MESSAGES/systemd.mo
+%lang(it) /usr/share/locale/it/LC_MESSAGES/systemd.mo
+%lang(hu) /usr/share/locale/hu/LC_MESSAGES/systemd.mo
+%lang(fr) /usr/share/locale/fr/LC_MESSAGES/systemd.mo
+%lang(el) /usr/share/locale/el/LC_MESSAGES/systemd.mo
+%lang(sv) /usr/share/locale/sv/LC_MESSAGES/systemd.mo
