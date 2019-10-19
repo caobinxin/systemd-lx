@@ -2849,7 +2849,7 @@ static int start_unit(sd_bus *bus, char **args) {
 
         log_info("%s %d\n", __func__, __LINE__);
                 q = start_unit_one(bus, method, *name, mode, &error, w);
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("1. %s %d\n", __func__, __LINE__);
                 if (r >= 0 && q < 0){
         log_info("%s %d\n", __func__, __LINE__);
                         r = translate_bus_error_to_exit_status(q, &error);
@@ -2871,7 +2871,7 @@ static int start_unit(sd_bus *bus, char **args) {
                                 check_triggering_units(bus, *name);
         }
 
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("2. %s %d\n", __func__, __LINE__);
         return r;
 }
 

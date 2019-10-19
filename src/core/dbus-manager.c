@@ -465,7 +465,7 @@ static int method_start_unit_generic(sd_bus *bus, sd_bus_message *message, Manag
         assert(bus);
         assert(message);
         assert(m);
-
+log_info("%s %d\n", __func__, __LINE__);
         r = bus_verify_manage_unit_async(m, message, error);
         if (r < 0)
                 return r;
@@ -480,6 +480,7 @@ static int method_start_unit_generic(sd_bus *bus, sd_bus_message *message, Manag
         if (r < 0)
                 return r;
 
+log_info("%s %d\n", __func__, __LINE__);
         return bus_unit_method_start_generic(bus, message, u, job_type, reload_if_possible, error);
 }
 
