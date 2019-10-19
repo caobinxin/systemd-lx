@@ -7704,6 +7704,7 @@ int main(int argc, char*argv[]) {
         log_show_color(1);
         log_open();
 
+        log_info("\n\ncolby colby\n\n.");
         /* Explicitly not on_tty() to avoid setting cached value.
          * This becomes relevant for piping output which might be
          * ellipsized. */
