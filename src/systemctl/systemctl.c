@@ -7704,7 +7704,13 @@ int main(int argc, char*argv[]) {
         log_show_color(1);
         log_open();
 
-        log_info("\n\ncolby colby\n\n.");
+        log_info("\n\ncolby colby %s %s \n\n.", argv[0], argv[1]);
+log_debug("debug ...\n");
+log_info("info ...\n");
+log_notice("notice ...\n");
+log_warning("warning ... \n");
+log_error("error ...\n");
+log_emergency("emergency ...\n");
         /* Explicitly not on_tty() to avoid setting cached value.
          * This becomes relevant for piping output which might be
          * ellipsized. */
