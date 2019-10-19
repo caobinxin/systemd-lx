@@ -2040,7 +2040,7 @@ _public_ int sd_bus_call(
                         if (incoming->reply_cookie == cookie) {
                                 /* Found a match! */
 
-        log_info("2. %s %d cookie=%d\n", __func__, __LINE__, cookie);
+        log_info("2. %s %d cookie=%ld\n", __func__, __LINE__, cookie);
                                 memmove(bus->rqueue + i, bus->rqueue + i + 1, sizeof(sd_bus_message*) * (bus->rqueue_size - i - 1));
                                 bus->rqueue_size--;
 
