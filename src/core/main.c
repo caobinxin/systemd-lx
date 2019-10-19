@@ -1250,7 +1250,7 @@ int main(int argc, char *argv[]) {
         log_show_color(1);
         log_open();
 #ifdef HAVE_SYSV_COMPAT
-        log_info("%s %s %d: start\n", __FILE__ __func__, __LINE__);
+        log_info("%s %s %d: start\n", __FILE__, __func__, __LINE__);
         log_info("arv=%s\n", (char *)*argv);
 
         if (getpid() != 1 && strstr(program_invocation_short_name, "init")) {
