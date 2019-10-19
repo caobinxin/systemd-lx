@@ -1251,8 +1251,10 @@ int main(int argc, char *argv[]) {
         log_open();
 #ifdef HAVE_SYSV_COMPAT
         log_info("%s %s %d: start\n", __FILE__, __func__, __LINE__);
-        log_info("arv=%s\n", (char *)*argv);
-
+        for(int i = 0; i < argc; i++){
+             log_info("argv[%d]=%s ", i, argv[i]);
+        }
+        log_info("\n");
         if (getpid() != 1 && strstr(program_invocation_short_name, "init")) {
                 /* This is compatibility support for SysV, where
                  * calling init as a user is identical to telinit. */

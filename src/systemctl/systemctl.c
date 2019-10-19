@@ -7695,6 +7695,7 @@ static int runlevel_main(void) {
 int main(int argc, char*argv[]) {
         _cleanup_bus_close_unref_ sd_bus *bus = NULL;
         int r;
+        log_info("%s %s %d\n", __FILE__, __func__, __LINE__);
         if(0)
             vt_set_active(1);
         setlocale(LC_ALL, "");
@@ -7703,15 +7704,10 @@ int main(int argc, char*argv[]) {
         log_set_max_level(7);
         log_show_color(1);
         log_open();
-
-        log_info("\n\ncolby colby %s \n\n.", (char *)*argv);
-        log_debug("debug ...\n");
-        log_info("info ...\n");
-        log_notice("notice ...\n");
-        log_warning("warning ... \n");
-        log_error("error ...\n");
-        log_emergency("emergency ...\n");
-        printf("\n\ncolby colby %s %s \n\n.", argv[0], argv[1]);
+        for(int i = 0; i < argc; i++){
+            log_info("argv[%d]=%s ", i, argv[i]);
+        }
+        log_info("\n");
         /* Explicitly not on_tty() to avoid setting cached value.
          * This becomes relevant for piping output which might be
          * ellipsized. */
