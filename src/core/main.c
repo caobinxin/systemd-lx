@@ -1245,7 +1245,14 @@ int main(int argc, char *argv[]) {
         struct rlimit saved_rlimit_nofile = RLIMIT_MAKE_CONST(0);
         const char *error_message = NULL;
 
+        log_set_target(LOG_TARGET_KMSG);
+        log_set_max_level(7);
+        log_show_color(1);
+        log_open();
 #ifdef HAVE_SYSV_COMPAT
+        log_info("%s %s %d: start\n", __FILE__ __func__, __LINE__);
+        log_info("arv=%s\n", (char *)*argv);
+
         if (getpid() != 1 && strstr(program_invocation_short_name, "init")) {
                 /* This is compatibility support for SysV, where
                  * calling init as a user is identical to telinit. */

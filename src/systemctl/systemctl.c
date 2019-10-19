@@ -7704,7 +7704,7 @@ int main(int argc, char*argv[]) {
         log_show_color(1);
         log_open();
 
-        log_info("\n\ncolby colby %s %s \n\n.", argv[0], argv[1]);
+        log_info("\n\ncolby colby %s \n\n.", (char *)*argv);
         log_debug("debug ...\n");
         log_info("info ...\n");
         log_notice("notice ...\n");
