@@ -933,20 +933,23 @@ int bus_socket_read_message(sd_bus *bus) {
                 uint8_t buf[CMSG_SPACE(sizeof(int) * BUS_FDS_MAX)];
         } control;
         bool handle_cmsg = false;
-
+log_info("%s %d\n", __func__, __LINE__);
         assert(bus);
         assert(bus->state == BUS_RUNNING || bus->state == BUS_HELLO);
 
         r = bus_socket_read_message_need(bus, &need);
-        if (r < 0)
-                return r;
+        if (r < 0){
+log_info("%s %d\n", __func__, __LINE__);
+                return r;}
 
-        if (bus->rbuffer_size >= need)
-                return bus_socket_make_message(bus, need);
+        if (bus->rbuffer_size >= need){
+log_info("%s %d\n", __func__, __LINE__);
+                return bus_socket_make_message(bus, need);}
 
         b = realloc(bus->rbuffer, need);
-        if (!b)
-                return -ENOMEM;
+        if (!b){
+log_info("%s %d\n", __func__, __LINE__);
+                return -ENOMEM;}
 
         bus->rbuffer = b;
 
@@ -954,9 +957,11 @@ int bus_socket_read_message(sd_bus *bus) {
         iov.iov_base = (uint8_t*) bus->rbuffer + bus->rbuffer_size;
         iov.iov_len = need - bus->rbuffer_size;
 
-        if (bus->prefer_readv)
+        if (bus->prefer_readv){
+log_info("%s %d\n", __func__, __LINE__);
                 k = readv(bus->input_fd, &iov, 1);
-        else {
+        }else {
+log_info("%s %d\n", __func__, __LINE__);
                 zero(mh);
                 mh.msg_iov = &iov;
                 mh.msg_iovlen = 1;
@@ -965,19 +970,24 @@ int bus_socket_read_message(sd_bus *bus) {
 
                 k = recvmsg(bus->input_fd, &mh, MSG_DONTWAIT|MSG_NOSIGNAL|MSG_CMSG_CLOEXEC);
                 if (k < 0 && errno == ENOTSOCK) {
+log_info("%s %d\n", __func__, __LINE__);
                         bus->prefer_readv = true;
                         k = readv(bus->input_fd, &iov, 1);
-                } else
-                        handle_cmsg = true;
+                } else{
+log_info("%s %d\n", __func__, __LINE__);
+                        handle_cmsg = true;}
         }
-        if (k < 0)
-                return errno == EAGAIN ? 0 : -errno;
-        if (k == 0)
-                return -ECONNRESET;
+        if (k < 0){
+log_info("%s %d\n", __func__, __LINE__);
+                return errno == EAGAIN ? 0 : -errno;}
+        if (k == 0){
+log_info("%s %d\n", __func__, __LINE__);
+                return -ECONNRESET;}
 
         bus->rbuffer_size += k;
 
         if (handle_cmsg) {
+log_info("%s %d\n", __func__, __LINE__);
                 struct cmsghdr *cmsg;
 
                 CMSG_FOREACH(cmsg, &mh)
@@ -985,6 +995,7 @@ int bus_socket_read_message(sd_bus *bus) {
                             cmsg->cmsg_type == SCM_RIGHTS) {
                                 int n, *f;
 
+log_info("%s %d\n", __func__, __LINE__);
                                 n = (cmsg->cmsg_len - CMSG_LEN(0)) / sizeof(int);
 
                                 if (!bus->can_fds) {
@@ -1005,18 +1016,22 @@ int bus_socket_read_message(sd_bus *bus) {
                                 memcpy(f + bus->n_fds, CMSG_DATA(cmsg), n * sizeof(int));
                                 bus->fds = f;
                                 bus->n_fds += n;
-                        } else
+                        } else{
+log_info("%s %d\n", __func__, __LINE__);
                                 log_debug("Got unexpected auxiliary data with level=%d and type=%d",
-                                          cmsg->cmsg_level, cmsg->cmsg_type);
+                                          cmsg->cmsg_level, cmsg->cmsg_type);}
         }
 
         r = bus_socket_read_message_need(bus, &need);
-        if (r < 0)
-                return r;
+        if (r < 0){
+log_info("%s %d\n", __func__, __LINE__);
+                return r;}
 
-        if (bus->rbuffer_size >= need)
-                return bus_socket_make_message(bus, need);
+        if (bus->rbuffer_size >= need){
+log_info("%s %d\n", __func__, __LINE__);
+                return bus_socket_make_message(bus, need);}
 
+log_info("%s %d\n", __func__, __LINE__);
         return 1;
 }
 

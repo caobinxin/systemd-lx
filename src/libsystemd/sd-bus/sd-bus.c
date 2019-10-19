@@ -1694,11 +1694,13 @@ static int dispatch_wqueue(sd_bus *bus) {
 
 static int bus_read_message(sd_bus *bus, bool hint_priority, int64_t priority) {
         assert(bus);
-
-        if (bus->is_kernel)
-                return bus_kernel_read_message(bus, hint_priority, priority);
-        else
-                return bus_socket_read_message(bus);
+log_info("%s %d\n", __func__, __LINE__);
+        if (bus->is_kernel){
+log_info("%s %d\n", __func__, __LINE__);
+                return bus_kernel_read_message(bus, hint_priority, priority);}
+        else{
+log_info("%s %d\n", __func__, __LINE__);
+                return bus_socket_read_message(bus);}
 }
 
 int bus_rqueue_make_room(sd_bus *bus) {
@@ -2033,14 +2035,14 @@ _public_ int sd_bus_call(
         log_info("%s %d\n", __func__, __LINE__);
                 while (i < bus->rqueue_size) {
                         sd_bus_message *incoming = NULL;
-        log_info("1. %s %d i=%d\n", __func__, __LINE__, i);
+        log_info("1-last. %s %d i=%d\n", __func__, __LINE__, i);
 
                         incoming = bus->rqueue[i];
 
                         if (incoming->reply_cookie == cookie) {
                                 /* Found a match! */
 
-        log_info("2. %s %d cookie=%ld\n", __func__, __LINE__, cookie);
+        log_info("2-err. %s %d cookie=%ld\n", __func__, __LINE__, cookie);
                                 memmove(bus->rqueue + i, bus->rqueue + i + 1, sizeof(sd_bus_message*) * (bus->rqueue_size - i - 1));
                                 bus->rqueue_size--;
 
@@ -2064,12 +2066,12 @@ _public_ int sd_bus_call(
 
                                 } else if (incoming->header->type == SD_BUS_MESSAGE_METHOD_ERROR){
                                         r = sd_bus_error_copy(error, &incoming->error);
-        log_info("3. %s %d\n name=%s message=%s", __func__, __LINE__, error->name, error->message);
+        log_info("3-err. %s %d\n name=%s message=%s", __func__, __LINE__, error->name, error->message);
                                 }else{
         log_info("%s %d\n", __func__, __LINE__);
                                         r = -EIO;}
 
-        log_info("4. %s %d\n", __func__, __LINE__);
+        log_info("4-err. %s %d\n", __func__, __LINE__);
                                 sd_bus_message_unref(incoming);
                                 return r;
 
@@ -2093,7 +2095,7 @@ _public_ int sd_bus_call(
 
                         /* Try to read more, right-away */
                         i++;
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info(" 2-last.%s %d\n", __func__, __LINE__);
                 }
 
                 r = bus_read_message(bus, false, 0);
@@ -2113,7 +2115,7 @@ _public_ int sd_bus_call(
 
                 if (timeout > 0) {
                         usec_t n;
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("3-last %s %d\n", __func__, __LINE__);
 
                         n = now(CLOCK_MONOTONIC);
                         if (n >= timeout){
@@ -2126,12 +2128,12 @@ _public_ int sd_bus_call(
                         left = (uint64_t) -1;}
 
                 r = bus_poll(bus, true, left);
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("4-to %s %d\n", __func__, __LINE__);
                 if (r < 0){
         log_info("%s %d\n", __func__, __LINE__);
                         return r;}
                 if (r == 0){
-        log_info("%s %d\n", __func__, __LINE__);
+        log_info("5-to %s %d\n", __func__, __LINE__);
                         return -ETIMEDOUT;}
     printf("path:%s,interface:%s,member:%s,destination:%s,sender:%s\n",m->path,m->interface,m->member,m->destination,m->sender);
         log_info("%s %d\n", __func__, __LINE__);
