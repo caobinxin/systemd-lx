@@ -987,8 +987,8 @@ log_info("%s %d\n", __func__, __LINE__);
         bus->rbuffer_size += k;
 
         if (handle_cmsg) {
-log_info("%s %d\n", __func__, __LINE__);
                 struct cmsghdr *cmsg;
+log_info("%s %d\n", __func__, __LINE__);
 
                 CMSG_FOREACH(cmsg, &mh)
                         if (cmsg->cmsg_level == SOL_SOCKET &&
