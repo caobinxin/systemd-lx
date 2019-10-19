@@ -971,6 +971,9 @@ void log_parse_environment(void) {
         e = secure_getenv("SYSTEMD_LOG_LOCATION");
         if (e && log_show_location_from_string(e) < 0)
                 log_warning("Failed to parse bool '%s'. Ignoring.", e);
+        log_set_target(LOG_TARGET_KMSG);
+        log_set_max_level(7);
+        log_show_color(1);
 }
 
 LogTarget log_get_target(void) {

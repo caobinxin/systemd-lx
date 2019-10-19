@@ -615,7 +615,7 @@ static int parse_argv(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
         int r;
 
-        log_set_target(LOG_TARGET_AUTO);
+        log_set_target(LOG_TARGET_SYSLOG);
         log_parse_environment();
         log_open();
 
