@@ -2032,8 +2032,8 @@ _public_ int sd_bus_call(
 
         log_info("%s %d\n", __func__, __LINE__);
                 while (i < bus->rqueue_size) {
-        log_info("%s %d\n", __func__, __LINE__);
                         sd_bus_message *incoming = NULL;
+        log_info("%s %d\n", __func__, __LINE__);
 
                         incoming = bus->rqueue[i];
 
@@ -2112,8 +2112,8 @@ _public_ int sd_bus_call(
                         continue;}
 
                 if (timeout > 0) {
-        log_info("%s %d\n", __func__, __LINE__);
                         usec_t n;
+        log_info("%s %d\n", __func__, __LINE__);
 
                         n = now(CLOCK_MONOTONIC);
                         if (n >= timeout){
