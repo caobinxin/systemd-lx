@@ -2685,21 +2685,26 @@ static int start_unit_one(
 
                 return r;
         }
+        log_info("%s %d\n", __func__, __LINE__);
 
         r = sd_bus_message_read(reply, "o", &path);
-        if (r < 0)
-                return bus_log_parse_error(r);
+        if (r < 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                return bus_log_parse_error(r);}
 
-        if (need_daemon_reload(bus, name) > 0)
-                warn_unit_file_changed(name);
+        if (need_daemon_reload(bus, name) > 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                warn_unit_file_changed(name);}
 
         if (w) {
+        log_info("%s %d\n", __func__, __LINE__);
                 log_debug("Adding %s to the set", path);
                 r = bus_wait_for_jobs_add(w, path);
                 if (r < 0)
                         return log_oom();
         }
 
+        log_info("%s %d\n", __func__, __LINE__);
         return 0;
 }
 

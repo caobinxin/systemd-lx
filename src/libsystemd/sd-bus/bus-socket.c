@@ -933,7 +933,7 @@ int bus_socket_read_message(sd_bus *bus) {
                 uint8_t buf[CMSG_SPACE(sizeof(int) * BUS_FDS_MAX)];
         } control;
         bool handle_cmsg = false;
-log_info("%s %d\n", __func__, __LINE__);
+log_info("1. %s %d\n", __func__, __LINE__);
         assert(bus);
         assert(bus->state == BUS_RUNNING || bus->state == BUS_HELLO);
 
@@ -961,7 +961,7 @@ log_info("%s %d\n", __func__, __LINE__);
 log_info("%s %d\n", __func__, __LINE__);
                 k = readv(bus->input_fd, &iov, 1);
         }else {
-log_info("%s %d\n", __func__, __LINE__);
+log_info("2. %s %d\n", __func__, __LINE__);
                 zero(mh);
                 mh.msg_iov = &iov;
                 mh.msg_iovlen = 1;
@@ -974,11 +974,11 @@ log_info("%s %d\n", __func__, __LINE__);
                         bus->prefer_readv = true;
                         k = readv(bus->input_fd, &iov, 1);
                 } else{
-log_info("%s %d\n", __func__, __LINE__);
+log_info("3. %s %d\n", __func__, __LINE__);
                         handle_cmsg = true;}
         }
         if (k < 0){
-log_info("%s %d\n", __func__, __LINE__);
+log_info("4. %s %d\n", __func__, __LINE__);
                 return errno == EAGAIN ? 0 : -errno;}
         if (k == 0){
 log_info("%s %d\n", __func__, __LINE__);
