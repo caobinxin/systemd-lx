@@ -7728,7 +7728,7 @@ int main(int argc, char*argv[]) {
         log_show_color(1);
         log_open();
         for(int i = 0; i < argc; i++){
-            log_info("argv[%d]=%s ", i, argv[i]);
+            log_debug("argv[%d]=%s ", i, argv[i]);
         }
         log_info("\n");
         /* Explicitly not on_tty() to avoid setting cached value.
