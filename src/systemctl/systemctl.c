@@ -7748,6 +7748,7 @@ int main(int argc, char*argv[]) {
         switch (arg_action) {
 
         case ACTION_SYSTEMCTL:
+                log_info("%s %d ACTION_SYSTEMCTL\n", __func__, __LINE__);
                 r = systemctl_main(bus, argc, argv, r);
                 break;
 
@@ -7760,6 +7761,8 @@ int main(int argc, char*argv[]) {
 
         case ACTION_RUNLEVEL2:
         case ACTION_RUNLEVEL3:
+                log_info("%s %d ACTION_RUNLEVEL3\n", __func__, __LINE__);
+                printf("%s %d ACTION_RUNLEVEL3\n", __func__, __LINE__);
         case ACTION_RUNLEVEL4:
         case ACTION_RUNLEVEL5:
         case ACTION_RESCUE:
