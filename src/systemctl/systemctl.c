@@ -7695,7 +7695,8 @@ static int runlevel_main(void) {
 int main(int argc, char*argv[]) {
         _cleanup_bus_close_unref_ sd_bus *bus = NULL;
         int r;
-
+        if(0)
+            vt_set_active(1);
         setlocale(LC_ALL, "");
         log_parse_environment();
         log_open();
