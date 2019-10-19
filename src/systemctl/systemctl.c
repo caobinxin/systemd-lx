@@ -7705,12 +7705,13 @@ int main(int argc, char*argv[]) {
         log_open();
 
         log_info("\n\ncolby colby %s %s \n\n.", argv[0], argv[1]);
-log_debug("debug ...\n");
-log_info("info ...\n");
-log_notice("notice ...\n");
-log_warning("warning ... \n");
-log_error("error ...\n");
-log_emergency("emergency ...\n");
+        log_debug("debug ...\n");
+        log_info("info ...\n");
+        log_notice("notice ...\n");
+        log_warning("warning ... \n");
+        log_error("error ...\n");
+        log_emergency("emergency ...\n");
+        printf("\n\ncolby colby %s %s \n\n.", argv[0], argv[1]);
         /* Explicitly not on_tty() to avoid setting cached value.
          * This becomes relevant for piping output which might be
          * ellipsized. */
