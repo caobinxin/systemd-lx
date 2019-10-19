@@ -772,7 +772,7 @@ int bus_socket_write_message(sd_bus *bus, sd_bus_message *m, size_t *idx) {
         size_t n;
         unsigned j;
         int r;
-
+log_info("%s %d\n", __func__, __LINE__);
         assert(bus);
         assert(m);
         assert(idx);
@@ -792,16 +792,19 @@ int bus_socket_write_message(sd_bus *bus, sd_bus_message *m, size_t *idx) {
         j = 0;
         iovec_advance(iov, &j, *idx);
 
-        if (bus->prefer_writev)
-                k = writev(bus->output_fd, iov, m->n_iovec);
+        if (bus->prefer_writev){
+log_info("%s %d\n", __func__, __LINE__);
+                k = writev(bus->output_fd, iov, m->n_iovec);}
         else {
                 struct msghdr mh;
                 zero(mh);
 
+log_info("%s %d\n", __func__, __LINE__);
                 if (m->n_fds > 0) {
                         struct cmsghdr *control;
                         control = alloca(CMSG_SPACE(sizeof(int) * m->n_fds));
 
+log_info("%s %d\n", __func__, __LINE__);
                         mh.msg_control = control;
                         control->cmsg_level = SOL_SOCKET;
                         control->cmsg_type = SCM_RIGHTS;
@@ -812,9 +815,11 @@ int bus_socket_write_message(sd_bus *bus, sd_bus_message *m, size_t *idx) {
                 mh.msg_iov = iov;
                 mh.msg_iovlen = m->n_iovec;
 
+log_info("%s %d\n", __func__, __LINE__);
                 k = sendmsg(bus->output_fd, &mh, MSG_DONTWAIT|MSG_NOSIGNAL);
                 if (k < 0 && errno == ENOTSOCK) {
                         bus->prefer_writev = true;
+log_info("%s %d\n", __func__, __LINE__);
                         k = writev(bus->output_fd, iov, m->n_iovec);
                 }
         }

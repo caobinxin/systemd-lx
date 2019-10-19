@@ -701,7 +701,7 @@ static int pppoe_receive_message(sd_event_source *s, int fd, uint32_t revents, v
 
         assert(ppp);
         assert(fd != -1);
-
+log_info("%s %d\n", __func__, __LINE__);
         r = ioctl(fd, FIONREAD, &buflen);
         if (r < 0)
                 return r;
