@@ -2636,6 +2636,7 @@ static int start_unit_one(
         const char *path;
         int r;
 
+        log_info("%s %d\n", __func__, __LINE__);
         assert(method);
         assert(name);
         assert(mode);
@@ -2650,17 +2651,21 @@ static int start_unit_one(
                         "/org/freedesktop/systemd1",
                         "org.freedesktop.systemd1.Manager",
                         method);
+        log_info("%s %d\n", __func__, __LINE__);
         if (r < 0)
                 return bus_log_create_error(r);
 
+        log_info("%s %d\n", __func__, __LINE__);
         r = sd_bus_message_set_allow_interactive_authorization(m, arg_ask_password);
         if (r < 0)
                 return bus_log_create_error(r);
 
+        log_info("%s %d\n", __func__, __LINE__);
         r = sd_bus_message_append(m, "ss", name, mode);
         if (r < 0)
                 return bus_log_create_error(r);
 
+        log_info("%s %d\n", __func__, __LINE__);
         r = sd_bus_call(bus, m, 0, error, &reply);
         if (r < 0) {
                 const char *verb;
@@ -2837,9 +2842,13 @@ static int start_unit(sd_bus *bus, char **args) {
                 _cleanup_bus_error_free_ sd_bus_error error = SD_BUS_ERROR_NULL;
                 int q;
 
+        log_info("%s %d\n", __func__, __LINE__);
                 q = start_unit_one(bus, method, *name, mode, &error, w);
-                if (r >= 0 && q < 0)
+        log_info("%s %d\n", __func__, __LINE__);
+                if (r >= 0 && q < 0){
+        log_info("%s %d\n", __func__, __LINE__);
                         r = translate_bus_error_to_exit_status(q, &error);
+                }
         }
 
         if (!arg_no_block) {

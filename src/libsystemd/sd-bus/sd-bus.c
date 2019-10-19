@@ -1990,6 +1990,7 @@ _public_ int sd_bus_call(
         unsigned i;
         int r;
 
+        log_info("%s %d\n", __func__, __LINE__);
         assert_return(bus, -EINVAL);
         assert_return(m, -EINVAL);
         assert_return(m->header->type == SD_BUS_MESSAGE_METHOD_CALL, -EINVAL);
@@ -1998,33 +1999,40 @@ _public_ int sd_bus_call(
         assert_return(!bus_pid_changed(bus), -ECHILD);
         assert_return(!bus->is_kernel || !(bus->hello_flags & KDBUS_HELLO_MONITOR), -EROFS);
 
-        if (!BUS_IS_OPEN(bus->state))
-                return -ENOTCONN;
+        if (!BUS_IS_OPEN(bus->state)){
+        log_info("%s %d\n", __func__, __LINE__);
+                return -ENOTCONN;}
 
         r = bus_ensure_running(bus);
-        if (r < 0)
-                return r;
+        if (r < 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                return r;}
 
         i = bus->rqueue_size;
 
         r = bus_seal_message(bus, m, usec);
-        if (r < 0)
-                return r;
+        if (r < 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                return r;}
 
         r = bus_remarshal_message(bus, &m);
-        if (r < 0)
-                return r;
+        if (r < 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                return r;}
 
         r = bus_send_internal(bus, m, &cookie, true);
-        if (r < 0)
-                return r;
+        if (r < 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                return r;}
 
         timeout = calc_elapse(m->timeout);
 
         for (;;) {
                 usec_t left;
 
+        log_info("%s %d\n", __func__, __LINE__);
                 while (i < bus->rqueue_size) {
+        log_info("%s %d\n", __func__, __LINE__);
                         sd_bus_message *incoming = NULL;
 
                         incoming = bus->rqueue[i];
@@ -2032,27 +2040,36 @@ _public_ int sd_bus_call(
                         if (incoming->reply_cookie == cookie) {
                                 /* Found a match! */
 
+        log_info("%s %d\n", __func__, __LINE__);
                                 memmove(bus->rqueue + i, bus->rqueue + i + 1, sizeof(sd_bus_message*) * (bus->rqueue_size - i - 1));
                                 bus->rqueue_size--;
 
                                 if (incoming->header->type == SD_BUS_MESSAGE_METHOD_RETURN) {
 
+        log_info("%s %d\n", __func__, __LINE__);
                                         if (incoming->n_fds <= 0 || (bus->hello_flags & KDBUS_HELLO_ACCEPT_FD)) {
-                                                if (reply)
+        log_info("%s %d\n", __func__, __LINE__);
+                                                if (reply){
+        log_info("%s %d\n", __func__, __LINE__);
                                                         *reply = incoming;
-                                                else
-                                                        sd_bus_message_unref(incoming);
+                                               }else{
+        log_info("%s %d\n", __func__, __LINE__);
+                                                        sd_bus_message_unref(incoming);}
 
+        log_info("%s %d\n", __func__, __LINE__);
                                                 return 1;
                                         }
 
                                         r = sd_bus_error_setf(error, SD_BUS_ERROR_INCONSISTENT_MESSAGE, "Reply message contained file descriptors which I couldn't accept. Sorry.");
 
-                                } else if (incoming->header->type == SD_BUS_MESSAGE_METHOD_ERROR)
+                                } else if (incoming->header->type == SD_BUS_MESSAGE_METHOD_ERROR){
+        log_info("%s %d\n", __func__, __LINE__);
                                         r = sd_bus_error_copy(error, &incoming->error);
-                                else
-                                        r = -EIO;
+                                }else{
+        log_info("%s %d\n", __func__, __LINE__);
+                                        r = -EIO;}
 
+        log_info("%s %d\n", __func__, __LINE__);
                                 sd_bus_message_unref(incoming);
                                 return r;
 
@@ -2061,6 +2078,7 @@ _public_ int sd_bus_call(
                                    incoming->sender &&
                                    streq(bus->unique_name, incoming->sender)) {
 
+        log_info("%s %d\n", __func__, __LINE__);
                                 memmove(bus->rqueue + i, bus->rqueue + i + 1, sizeof(sd_bus_message*) * (bus->rqueue_size - i - 1));
                                 bus->rqueue_size--;
 
@@ -2075,42 +2093,55 @@ _public_ int sd_bus_call(
 
                         /* Try to read more, right-away */
                         i++;
+        log_info("%s %d\n", __func__, __LINE__);
                 }
 
                 r = bus_read_message(bus, false, 0);
                 if (r < 0) {
+        log_info("%s %d\n", __func__, __LINE__);
                         if (r == -ENOTCONN || r == -ECONNRESET || r == -EPIPE || r == -ESHUTDOWN) {
+        log_info("%s %d\n", __func__, __LINE__);
                                 bus_enter_closing(bus);
                                 return -ECONNRESET;
                         }
 
                         return r;
                 }
-                if (r > 0)
-                        continue;
+                if (r > 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                        continue;}
 
                 if (timeout > 0) {
+        log_info("%s %d\n", __func__, __LINE__);
                         usec_t n;
 
                         n = now(CLOCK_MONOTONIC);
-                        if (n >= timeout)
-                                return -ETIMEDOUT;
+                        if (n >= timeout){
+        log_info("%s %d\n", __func__, __LINE__);
+                                return -ETIMEDOUT;}
 
                         left = timeout - n;
-                } else
-                        left = (uint64_t) -1;
+                } else {
+        log_info("%s %d\n", __func__, __LINE__);
+                        left = (uint64_t) -1;}
 
                 r = bus_poll(bus, true, left);
-                if (r < 0)
-                        return r;
-                if (r == 0)
-                        return -ETIMEDOUT;
+        log_info("%s %d\n", __func__, __LINE__);
+                if (r < 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                        return r;}
+                if (r == 0){
+        log_info("%s %d\n", __func__, __LINE__);
+                        return -ETIMEDOUT;}
     printf("path:%s,interface:%s,member:%s,destination:%s,sender:%s\n",m->path,m->interface,m->member,m->destination,m->sender);
+        log_info("%s %d\n", __func__, __LINE__);
     //	if(!strcmp(m->member,"StartUnit"))
     //		vt_set_active(1);
                 r = dispatch_wqueue(bus);
                 if (r < 0) {
+        log_info("%s %d\n", __func__, __LINE__);
                         if (r == -ENOTCONN || r == -ECONNRESET || r == -EPIPE || r == -ESHUTDOWN) {
+        log_info("%s %d\n", __func__, __LINE__);
                                 bus_enter_closing(bus);
                                 return -ECONNRESET;
                         }
